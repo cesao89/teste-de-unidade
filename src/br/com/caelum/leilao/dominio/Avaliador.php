@@ -5,6 +5,7 @@ class Avaliador{
 	private $maiorLance = -INF;
 	private $menorLance = INF;
 	private $medioLance;
+	private $todosLances;
 	
 	public function avalia(Leilao $leilao)
 	{
@@ -16,6 +17,8 @@ class Avaliador{
 	        $lances = $leilao->getLances();
 	        
 	        foreach ($lances as $lance){
+	            $this->todosLances[] = $lance->getValor();
+	            
 	            if($lance->getValor() > $this->maiorLance){
 	                $this->maiorLance = $lance->getValor();
 	            }
@@ -41,6 +44,13 @@ class Avaliador{
 	
 	public function getMedioValor(){
 	    return $this->medioLance;
+	}
+	
+	public function getTresMaiores()
+	{
+	    rsort($this->todosLances);
+	    $return = array_chunk($this->todosLances, 3);
+	    return $return[0];
 	}
 }
 ?>
