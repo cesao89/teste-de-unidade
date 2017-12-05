@@ -1,7 +1,8 @@
 <?php 
 namespace src\br\com\caelum\leilao\dominio;
 
-class Avaliador{
+class Avaliador
+{
 	private $maiorLance = -INF;
 	private $menorLance = INF;
 	private $medioLance;
@@ -10,9 +11,7 @@ class Avaliador{
 	public function avalia(Leilao $leilao)
 	{
 	    if(empty($leilao->getLances())){
-	        $this->maiorLance = 0;
-	        $this->menorLance = 0;
-	        $this->medioLance = 0;
+	        throw new \RuntimeException("Não é possível avaliar um leilão sem lances");
 	    } else {
 	        $lances = $leilao->getLances();
 	        
@@ -34,15 +33,18 @@ class Avaliador{
 	    }
 	}
 	
-	public function getMaiorValor(){
+	public function getMaiorValor()
+	{
 		return $this->maiorLance;
 	}
 	
-	public function getMenorValor(){
+	public function getMenorValor()
+	{
 		return $this->menorLance;
 	}
 	
-	public function getMedioValor(){
+	public function getMedioValor()
+	{
 	    return $this->medioLance;
 	}
 	

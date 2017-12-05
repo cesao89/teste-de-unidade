@@ -1,14 +1,20 @@
 <?php
 namespace src\br\com\caelum\leilao\dominio;
 
+use phpDocumentor\Reflection\Types\Boolean;
+
 class Leilao {
 	private $descricao;
 	private $lances;
+	private $data;
+	private $encerrado;
 	
-	public function __construct(string $descricao, array $lances)
+	public function __construct(string $descricao = NULL, array $lances = [])
 	{
 		$this->descricao = $descricao;
 		$this->lances = $lances;
+		$this->data = new \DateTime();
+		$this->encerrado = false;
 	}
 	
 	public function getDescricao()
@@ -21,6 +27,16 @@ class Leilao {
 		return $this->lances;
 	}
 	
+	public function getData()
+	{
+	    return $this->data;
+	}
+	
+	public function getEncerrado()
+	{
+	    return $this->encerrado;
+	}
+	
 	public function setDescricao(string $descricao)
 	{
 		$this->descricao = $descricao;
@@ -29,6 +45,16 @@ class Leilao {
 	public function setLances(array $lances)
 	{
 		$this->lances = $lances;
+	}
+	
+	public function setData(\DateTime $data)
+	{
+	    $this->data = $data;
+	}
+	
+	public function setEncerrado(Boolean $boolean)
+	{
+	    $this->encerrado = $boolean;
 	}
 	
 	public function propoe(Lances $lance)
@@ -44,6 +70,11 @@ class Leilao {
 	    }
 	}
 	
+	public function encerra()
+	{
+	    $this->encerrado = true;
+	}
+	
 	private function validaQuantidadePorUsuario(Usuario $usuario)
 	{
 	    $total = 0;
@@ -56,7 +87,8 @@ class Leilao {
 	    if($total < 5){
 	        return true;
 	    }
-	    return false;
+	    
+	    throw new \RuntimeException("Limite de Lançes por Usuário Excedido");
 	}
 	
 	private function validaDoisLancesSeguidosPorUsuario(Usuario $usuario)
@@ -64,7 +96,8 @@ class Leilao {
 	    if($this->lances[count($this->lances) -1]->getUsuario() != $usuario){
 	        return true;
 	    }
-	    return false;
+	    
+	    throw new \RuntimeException("Não é possível efetuar dois lançes seguidos");
 	}
 	
 	private function validaLancesCrescente(float $valor)
@@ -72,7 +105,8 @@ class Leilao {
 	    if($this->lances[count($this->lances) -1]->getValor() < $valor){
 	        return true;
 	    }
-	    return false;
+	    
+	    throw new \RuntimeException("Valor do lançe menor do lance anterior");
 	}
 }
 ?>
