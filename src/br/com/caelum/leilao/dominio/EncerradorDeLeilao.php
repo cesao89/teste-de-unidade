@@ -2,15 +2,18 @@
 namespace src\br\com\caelum\leilao\dominio;
 
 use test\br\com\caelum\leilao\dominio\LeilaoCrudDao;
+use test\br\com\caelum\leilao\dominio\EnviadorDeEmailCrud;
 
 class EncerradorDeLeilao
 {
     private $total = 0;
     private $dao;
+    private $carteiro;
     
-    public function __construct(LeilaoCrudDao $dao)
+    public function __construct(LeilaoCrudDao $dao, EnviadorDeEmailCrud $carteiro)
     {
         $this->dao = $dao;
+        $this->carteiro = $carteiro;
     }
     
     public function encerrar()
@@ -22,6 +25,7 @@ class EncerradorDeLeilao
                 $leilao->encerra();
                 $this->total++;
                 $this->dao->atualiza($leilao);
+                $this->carteiro->envia($leilao);
             }
         }
     }
@@ -48,7 +52,7 @@ class EncerradorDeLeilao
             return true;
         }
         
-        throw new \RuntimeException("Leilão criado menos de 7 dias");
+        //throw new \RuntimeException("Leilão criado menos de 7 dias");
     }
     
     private function diasEntre(\DateTime $inicio, \DateTime $fim)
