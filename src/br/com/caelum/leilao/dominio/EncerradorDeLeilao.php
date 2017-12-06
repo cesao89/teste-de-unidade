@@ -1,7 +1,7 @@
 <?php
 namespace src\br\com\caelum\leilao\dominio;
 
-use test\br\com\caelum\leilao\dominio\LeilaoCrudDao;
+use src\br\com\caelum\leilao\interfaces\LeilaoCrudDao;
 use test\br\com\caelum\leilao\dominio\EnviadorDeEmailCrud;
 
 class EncerradorDeLeilao
@@ -33,18 +33,12 @@ class EncerradorDeLeilao
             }
         }
     }
-    
-    /**
-     * @return number
-     */
+
     public function getTotal()
     {
         return $this->total;
     }
 
-    /**
-     * @param number $total
-     */
     public function setTotal($total)
     {
         $this->total = $total;

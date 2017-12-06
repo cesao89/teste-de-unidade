@@ -4,6 +4,7 @@ namespace test\br\com\caelum\leilao\dominio;
 use PHPUnit\Framework\TestCase;
 use src\br\com\caelum\leilao\dominio\LeilaoBuilder;
 use src\br\com\caelum\leilao\dominio\EncerradorDeLeilao;
+use src\br\com\caelum\leilao\interfaces\LeilaoCrudDao;
 
 date_default_timezone_set("America/Sao_Paulo");
 
