@@ -119,4 +119,33 @@ class EncerradorDeLeilaoTest extends TestCase
         $this->assertTrue($leilao->getEncerrado());
         $this->assertEquals(1, $encerrador->getTotal());
     }
+    
+    public function testDeveContinuarAExecucaoMesmoQuandoDaoFalha()
+    {
+        $antiga = (new \DateTime())->sub(new \DateInterval("P7D"));
+        
+        $leilao1 = new LeilaoBuilder();
+        $leilao1 = $leilao1->comDescricao("TV de Plasma")
+            ->naData($antiga)
+            ->cria();
+        
+        $leilao2 = new LeilaoBuilder();
+        $leilao2 = $leilao2->comDescricao("Geladeira")
+            ->naData($antiga)
+            ->cria();
+        
+        $dao = $this->createMock(LeilaoCrudDao::class);
+        $dao->method("correntes")->will($this->returnValue([$leilao1, $leilao2]));
+        $dao->method("atualiza")->will($this->throwException(new \RuntimeException("Erro ao se conectar ao DAO")));
+        
+        $carteiro = $this->createMock(EnviadorDeEmailCrud::class);
+        $carteiro->expects($this->never())->method("envia");
+        
+        $encerrador = new EncerradorDeLeilao($dao, $carteiro);
+        $encerrador->encerrar();
+        
+        $this->assertTrue($leilao1->getEncerrado());
+        $this->assertTrue($leilao2->getEncerrado());
+        $this->assertEquals(0, $encerrador->getTotal());
+    }
 }
